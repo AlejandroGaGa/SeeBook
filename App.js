@@ -13,7 +13,7 @@ export default function App() {
       console.log(" es verdadero");
     }else
     {
-      console.log(" es falso");
+      console.log("ESTO ES FALSO");
       setstring("Perro")
       console.log(string);
     }
