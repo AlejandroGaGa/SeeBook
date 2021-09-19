@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-seebook-dev-223236-authRole",
+      "UnauthRoleArn": "arn:aws:iam::533970949216:role/amplify-seebook-dev-223236-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::533970949216:role/amplify-seebook-dev-223236-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-seebook-dev-223236-deployment",
+      "UnauthRoleName": "amplify-seebook-dev-223236-unauthRole",
+      "StackName": "amplify-seebook-dev-223236",
+      "StackId": "arn:aws:cloudformation:us-east-2:533970949216:stack/amplify-seebook-dev-223236/37818b10-18fa-11ec-ac6d-0a1cd4820818",
+      "AmplifyAppId": "d1xkw7az7i80bp"
+    },
+    "categories": {
+      "auth": {
+        "seebook5f863bf5": {}
+      }
+    }
+  }
+}

@@ -1,51 +1,21 @@
-// aca inician los imports
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { View,Text } from "react-native";
 
+import Amplify from "aws-amplify";
+import awsconfig from "./src/aws-exports";
+import { AmplifySignOut, withAuthenticator } from "aws-amplify-react-native";
+Amplify.configure(awsconfig);
 // aca es la estructura de react
-export default function App() {
-  const [modal, setmodal] = useState(false);
-  const [string, setstring] = useState("");
-
-  function changestate() {
-    if (modal != false) {
-      console.log(" es verdadero");
-    }else
-    {
-      console.log("ESTO ES FALSO");
-      setstring("Perro")
-      console.log(string);
-    }
-  }
-
+function App() {
   return (
-    <>
-      <View style={styles.container}>
-        <Text style={styles.text}>{string}</Text>
-        <StatusBar style="auto" />
-      </View>
-      <View>
-        <Button
-          onPress={() => changestate()}
-          title="Presionar"
-          color="#841584"
-        />
-      </View>
-    </>
+    <View style={{alignContent:"center", marginLeft:"10%",marginTop:"30%"}}>
+     {/*  <AmplifySignOut />
+      <StatusBar style="auto" /> */}
+      <Text>Hola, ya estas dentro de la app</Text>
+
+    </View>
   );
 }
 
-// aca se crean los estilos
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "#E32636",
-    fontSize: 25,
-  },
-});
+export default withAuthenticator(App);
