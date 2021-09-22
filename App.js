@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,10 +8,14 @@ import {
   Image,
   TouchableOpacityBase,
 } from "react-native";
-import Home from "./screens/home";
-import Interest from "./screens/interest";
 import s from "./src/style";
 import Icon from "react-native-vector-icons/FontAwesome";
+//SCREENS
+import Home from "./screens/home";
+import Interest from "./screens/interest";
+import Login from "./screens/initial/login";
+import Register from "./screens/initial/register";
+import Confirmation from "./screens/initial/confirmation";
 //NAVIGATION
 import {
   createDrawerNavigator,
@@ -20,19 +24,34 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 //AWS
 import Amplify from "aws-amplify";
+import { Auth } from "aws-amplify";
 import awsconfig from "./src/aws-exports";
 
 import { AmplifySignOut, withAuthenticator } from "aws-amplify-react-native";
 Amplify.configure(awsconfig);
 
-//FUNCTIONS
+//FUNCTIONS THAT RETURNS SCREENS
 function HomeScreen({ navigation }) {
   return <Home />;
 }
 
 function InterestScreen({ navigation }) {
-  return <Interest />;
+  return <Interest navigation={navigation} />;
 }
+
+function LoginScreen({ navigation }) {
+  return <Login navigation={navigation} />;
+}
+
+function RegisterScreen({ navigation }) {
+  return <Register navigation={navigation} />;
+}
+
+function ConfirmationScreen({ navigation }) {
+  return <Confirmation navigation={navigation} />;
+}
+
+//MENU
 function DrawerMenu(props) {
   return (
     <TouchableOpacity onPress={props.navigation}>
@@ -48,7 +67,36 @@ function DrawerMenu(props) {
   );
 }
 
-function Menu(props) {
+const Menu = (props) => {
+  //get connected user
+  useEffect(() => {
+    verifyUser();
+  }, []);
+  //states
+  const [existUser, setExistUser] = useState(false);
+  //FUNCTIONS
+  async function verifyUser() {
+    try {
+      var user = await Auth.currentAuthenticatedUser();
+      console.log("existe un usuario conectado: ", user.attributes);
+      if (user.attributes) {
+        setExistUser(true);
+      } else {
+        setExistUser(false);
+      }
+    } catch (error) {
+      setExistUser(false);
+      console.error("Error al verificar si hay un usuario conectado: ", error);
+    }
+    //console.log("resultado: ", existUser);
+  }
+
+  async function signOut(){
+    setExistUser(false);
+    Auth.signOut();
+    props.navigation.navigate("Categorias");
+  }
+
   return (
     <View style={s.container}>
       <View style={s.bgContainer}>
@@ -71,15 +119,55 @@ function Menu(props) {
         titleName="Categorias"
         navigation={() => props.navigation.navigate("Categorias")}
       />
-      <DrawerMenu
-        iconName="user"
-        titleName="Intereses Personales"
-        navigation={() => props.navigation.navigate("Intereses")}
-      />
+      {existUser && (
+        <>
+          <DrawerMenu
+            iconName="user"
+            titleName="Intereses Personales"
+            navigation={() => props.navigation.navigate("Intereses")}
+          />
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              bottom: 20,
+              alignItems: "center",
+              alignSelf: "center",
+              height: 30,
+              width: 55,
+              backgroundColor: "#dc323a",
+              borderRadius: 5,
+              padding: 5,
+            }}
+            onPress={() => signOut()}
+          >
+            <Icon size={17} color={"white"} name={"power-off"} />
+          </TouchableOpacity>
+        </>
+      )}
+      {existUser == false && (
+        <View
+          style={{
+            top: "60%",
+            marginLeft: "15%"
+          }}
+        >
+          <DrawerMenu
+            iconName="key"
+            titleName="Conectarse"
+            navigation={() => props.navigation.navigate("Login")}
+          />
+          <DrawerMenu
+            iconName="rocket"
+            titleName="Registrarse"
+            navigation={() => props.navigation.navigate("Registro")}
+          />
+        </View>
+      )}
     </View>
   );
-}
+};
 
+//NAVIGATION LOGIC
 const Drawer = createDrawerNavigator();
 //STRUCTURE VIEW REACT NATIVE
 function App() {
@@ -88,9 +176,12 @@ function App() {
       <Drawer.Navigator drawerContent={(props) => <Menu {...props} />}>
         <Drawer.Screen name="Categorias" component={HomeScreen} />
         <Drawer.Screen name="Intereses" component={InterestScreen} />
+        <Drawer.Screen name="Login" component={LoginScreen} />
+        <Drawer.Screen name="Registro" component={RegisterScreen} />
+        <Drawer.Screen name="Confirmacion" component={ConfirmationScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
 }
 
-export default withAuthenticator(App);
+export default App;
