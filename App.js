@@ -61,8 +61,7 @@ function Menu(props) {
           </View>
           <View style={s.userNombre}>
             <Text style={s.userSubTitulo}>
-              La mejor plataforma para lectura gratuita. Te recomendamos leer
-              con una luz exterior encendida.
+              La mejor plataforma para lectura gratuita.
             </Text>
           </View>
         </TouchableOpacity>
@@ -77,12 +76,6 @@ function Menu(props) {
         titleName="Intereses Personales"
         navigation={() => props.navigation.navigate("Intereses")}
       />
-      <View style={{marginTop:"140%"}}>
-        <Image
-          style={{ width: "100%", height: 154, borderRadius: 75 }}
-          source={require("./assets/ebook.gif")}
-        ></Image>
-      </View>
     </View>
   );
 }

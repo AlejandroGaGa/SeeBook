@@ -1,7 +1,7 @@
 export default {
 
     container: {
-       backgroundColor:"#eef2f5",
+       backgroundColor:"white",
         flex: 1,
     },
 
