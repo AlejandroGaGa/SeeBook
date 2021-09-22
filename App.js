@@ -7,6 +7,10 @@ import {
   TouchableOpacity,
   Image,
   TouchableOpacityBase,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import s from "./src/style";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -16,12 +20,21 @@ import Interest from "./screens/interest";
 import Login from "./screens/initial/login";
 import Register from "./screens/initial/register";
 import Confirmation from "./screens/initial/confirmation";
+import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import {
+  Collapse,
+  CollapseHeader,
+  CollapseBody,
+} from "accordion-collapse-react-native";
 //NAVIGATION
 import {
   createDrawerNavigator,
   DrawerItemList,
 } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
+//API
+import Openlibra from "./components/openlibra";
 //AWS
 import Amplify from "aws-amplify";
 import { Auth } from "aws-amplify";
@@ -68,13 +81,36 @@ function DrawerMenu(props) {
 }
 
 const Menu = (props) => {
-  //get connected user
+  //get connected user and categos
   useEffect(() => {
     verifyUser();
+    Getbooks();
   }, []);
   //states
   const [existUser, setExistUser] = useState(false);
+  var arrecategories = [];
+  const [arrecatego, setarrecategories] = useState([]);
   //FUNCTIONS
+  async function Getbooks() {
+    let book = new Openlibra();
+
+    book
+      .getcategories()
+      .then((data) => {
+        for (var i in data) {
+          arrecategories.push(data[i]);
+        }
+
+        setarrecategories(arrecategories);
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log("Ocurrio un error ", error);
+      });
+  }
+
   async function verifyUser() {
     try {
       var user = await Auth.currentAuthenticatedUser();
@@ -91,7 +127,7 @@ const Menu = (props) => {
     //console.log("resultado: ", existUser);
   }
 
-  async function signOut(){
+  async function signOut() {
     setExistUser(false);
     Auth.signOut();
     props.navigation.navigate("Categorias");
@@ -114,55 +150,131 @@ const Menu = (props) => {
           </View>
         </TouchableOpacity>
       </View>
-      <DrawerMenu
-        iconName="home"
-        titleName="Categorias"
-        navigation={() => props.navigation.navigate("Categorias")}
-      />
-      {existUser && (
-        <>
-          <DrawerMenu
-            iconName="user"
-            titleName="Intereses Personales"
-            navigation={() => props.navigation.navigate("Intereses")}
-          />
-          <TouchableOpacity
+
+      <ScrollView style={styles.scrollView}>
+        <DrawerMenu
+          iconName="home"
+          titleName="SeeBook / Inicio"
+          navigation={() => props.navigation.navigate("SeeBook")}
+        />
+        {existUser && (
+          <>
+            <DrawerMenu
+              iconName="user"
+              titleName="Intereses Personales"
+              navigation={() => props.navigation.navigate("Intereses")}
+            />
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                bottom: 20,
+                alignItems: "center",
+                alignSelf: "center",
+                height: 30,
+                width: 55,
+                backgroundColor: "#dc323a",
+                borderRadius: 5,
+                padding: 5,
+              }}
+              onPress={() => signOut()}
+            >
+              <Icon size={17} color={"white"} name={"power-off"} />
+            </TouchableOpacity>
+          </>
+        )}
+        {existUser == false && (
+          <View
             style={{
-              position: "absolute",
-              bottom: 20,
-              alignItems: "center",
-              alignSelf: "center",
-              height: 30,
-              width: 55,
-              backgroundColor: "#dc323a",
-              borderRadius: 5,
-              padding: 5,
+              top: "60%",
+              marginLeft: "15%",
             }}
-            onPress={() => signOut()}
           >
-            <Icon size={17} color={"white"} name={"power-off"} />
-          </TouchableOpacity>
-        </>
-      )}
-      {existUser == false && (
-        <View
-          style={{
-            top: "60%",
-            marginLeft: "15%"
-          }}
-        >
-          <DrawerMenu
-            iconName="key"
-            titleName="Conectarse"
-            navigation={() => props.navigation.navigate("Login")}
-          />
-          <DrawerMenu
-            iconName="rocket"
-            titleName="Registrarse"
-            navigation={() => props.navigation.navigate("Registro")}
-          />
-        </View>
-      )}
+            <DrawerMenu
+              iconName="key"
+              titleName="Conectarse"
+              navigation={() => props.navigation.navigate("Login")}
+            />
+            <DrawerMenu
+              iconName="rocket"
+              titleName="Registrarse"
+              navigation={() => props.navigation.navigate("Registro")}
+            />
+          </View>
+        )}
+        <Collapse style={{ flex: 1 }}>
+          <CollapseHeader
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginVertical: 15,
+            }}
+          >
+            <View
+              style={{
+                flex: 8.5,
+                flexDirection: "row",
+              }}
+            >
+              <View style={{ width: "10%" }}>
+                <MaterialIcons name="category" size={20} color="black" />
+              </View>
+
+              <View>
+                <Text style={{ width: "100%", fontSize: 13, marginLeft: 12 }}>
+                  Categorias
+                </Text>
+              </View>
+              <View style={{ marginLeft: "50%" }}>
+                <AntDesign name="arrowdown" size={17} color="black" />
+              </View>
+            </View>
+          </CollapseHeader>
+          <CollapseBody>
+            {arrecatego.length > 0 ? (
+              arrecatego.map((item, key) => (
+                <View>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "white",
+                      height: 41,
+                      alignItems: "flex-start",
+                      marginLeft: "2.5%",
+                      width: "95%",
+                      borderRadius: 5,
+                      elevation: 4,
+                      padding: 5,
+                      marginBottom: 2.5,
+                    }}
+                    onPress={() => console.log(item.category_id)}
+                  >
+                    <Text style={s.tituloTxt}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              ))
+            ) : (
+              <View style={{ alignItems: "center", alignContent: "center" }}>
+                {/*   <Image
+                    style={{ width: "100%", height: 150, borderRadius: 25 }}
+                    source={require("../assets/Seebook.jpeg")}
+                  ></Image> */}
+
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: "500",
+                    color: "black",
+                  }}
+                >
+                  Bienvenido...
+                </Text>
+
+                <ActivityIndicator size="large" color="#a1887f" />
+              </View>
+            )}
+          </CollapseBody>
+        </Collapse>
+      </ScrollView>
     </View>
   );
 };
@@ -174,7 +286,7 @@ function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator drawerContent={(props) => <Menu {...props} />}>
-        <Drawer.Screen name="Categorias" component={HomeScreen} />
+        <Drawer.Screen name="SeeBook" component={HomeScreen} />
         <Drawer.Screen name="Intereses" component={InterestScreen} />
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Registro" component={RegisterScreen} />
@@ -185,3 +297,19 @@ function App() {
 }
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: "2%",
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollView: {
+    alignContent: "center",
+    width: "100%",
+    height: "100%",
+  },
+  text: {
+    fontSize: 42,
+  },
+});
