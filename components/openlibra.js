@@ -22,6 +22,26 @@ class Openlibra extends Component {
         reject(error);
       }
     });
+    //obtener libros topic 
+    getbookstop = () =>
+    new Promise(async (resolve, reject) => {
+      try {
+        const GetBooks = await fetch(
+          "https://www.etnassoft.com/api/v1/get/?publisher_date=2019",
+          {
+            method: "GET",
+            
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const getbookstop = await GetBooks.json();
+        resolve(getbookstop);
+      } catch (error) {
+        reject(error);
+      }
+    });
 }
 
 Openlibra.propTypes = { children: PropTypes.func.isRequired };
