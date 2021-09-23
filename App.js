@@ -150,57 +150,12 @@ const Menu = (props) => {
           </View>
         </TouchableOpacity>
       </View>
-
+      <DrawerMenu
+        iconName="home"
+        titleName="SeeBook / Inicio"
+        navigation={() => props.navigation.navigate("SeeBook")}
+      />
       <ScrollView style={styles.scrollView}>
-        <DrawerMenu
-          iconName="home"
-          titleName="SeeBook / Inicio"
-          navigation={() => props.navigation.navigate("SeeBook")}
-        />
-        {existUser && (
-          <>
-            <DrawerMenu
-              iconName="user"
-              titleName="Intereses Personales"
-              navigation={() => props.navigation.navigate("Intereses")}
-            />
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                bottom: 20,
-                alignItems: "center",
-                alignSelf: "center",
-                height: 30,
-                width: 55,
-                backgroundColor: "#dc323a",
-                borderRadius: 5,
-                padding: 5,
-              }}
-              onPress={() => signOut()}
-            >
-              <Icon size={17} color={"white"} name={"power-off"} />
-            </TouchableOpacity>
-          </>
-        )}
-        {existUser == false && (
-          <View
-            style={{
-              top: "60%",
-              marginLeft: "15%",
-            }}
-          >
-            <DrawerMenu
-              iconName="key"
-              titleName="Conectarse"
-              navigation={() => props.navigation.navigate("Login")}
-            />
-            <DrawerMenu
-              iconName="rocket"
-              titleName="Registrarse"
-              navigation={() => props.navigation.navigate("Registro")}
-            />
-          </View>
-        )}
         <Collapse style={{ flex: 1 }}>
           <CollapseHeader
             style={{
@@ -275,6 +230,49 @@ const Menu = (props) => {
           </CollapseBody>
         </Collapse>
       </ScrollView>
+      {existUser && (
+        <>
+          <DrawerMenu
+            iconName="user"
+            titleName="Intereses Personales"
+            navigation={() => props.navigation.navigate("Intereses")}
+          />
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              bottom: 20,
+              alignItems: "center",
+              alignSelf: "center",
+              height: 30,
+              width: 55,
+              backgroundColor: "#dc323a",
+              borderRadius: 5,
+              padding: 5,
+            }}
+            onPress={() => signOut()}
+          >
+            <Icon size={17} color={"white"} name={"power-off"} />
+          </TouchableOpacity>
+        </>
+      )}
+      {existUser == false && (
+        <View
+        style={{
+          marginLeft: "15%",
+        }}
+        >
+          <DrawerMenu
+            iconName="key"
+            titleName="Conectarse"
+            navigation={() => props.navigation.navigate("Login")}
+          />
+          <DrawerMenu
+            iconName="rocket"
+            titleName="Registrarse"
+            navigation={() => props.navigation.navigate("Registro")}
+          />
+        </View>
+      )}
     </View>
   );
 };
