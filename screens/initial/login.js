@@ -3,7 +3,7 @@ import { Text, View, TextInput, Image, TouchableOpacity } from "react-native";
 import { Auth } from "aws-amplify";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Login = () => {
+function Login({ navigation }){
   const [email, setEmail] = useState("");
   const [passwrd, setPasswrd] = useState("");
 
@@ -17,7 +17,13 @@ const Login = () => {
     setMessage("Espera ...");
     try {
       if (email != "" && passwrd != "") {
+        console.log("conectando ...");
         const user = await Auth.signIn(email.trim(), passwrd.trim());
+        //console.log(user)
+        if(user.attributes != {}){
+          navigation.navigate("SeeBook");
+        }
+        setMessage("Hola, en que puedo ayudarte ?");
       } else {
         setMessage("Has olvidado poner el correo o la contraseña");
       }
@@ -135,7 +141,7 @@ const Login = () => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Registro")}>
         <Text style={{ color: "#2f2f2f", fontSize: 17 }}>
           Aun no tienes una cuenta? Registrarse
         </Text>

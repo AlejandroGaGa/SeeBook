@@ -130,7 +130,7 @@ const Menu = (props) => {
   async function signOut() {
     setExistUser(false);
     Auth.signOut();
-    props.navigation.navigate("Categorias");
+    props.navigation.navigate("SeeBook");
   }
 
   return (
@@ -155,6 +155,13 @@ const Menu = (props) => {
         titleName="SeeBook / Inicio"
         navigation={() => props.navigation.navigate("SeeBook")}
       />
+      {existUser && (
+        <DrawerMenu
+          iconName="user"
+          titleName="Intereses Personales"
+          navigation={() => props.navigation.navigate("Intereses")}
+        />
+      )}
       <ScrollView style={styles.scrollView}>
         <Collapse style={{ flex: 1 }}>
           <CollapseHeader
@@ -188,7 +195,7 @@ const Menu = (props) => {
           <CollapseBody>
             {arrecatego.length > 0 ? (
               arrecatego.map((item, key) => (
-                <View>
+                <View key={item.category_id}>
                   <TouchableOpacity
                     style={{
                       backgroundColor: "white",
@@ -232,11 +239,7 @@ const Menu = (props) => {
       </ScrollView>
       {existUser && (
         <>
-          <DrawerMenu
-            iconName="user"
-            titleName="Intereses Personales"
-            navigation={() => props.navigation.navigate("Intereses")}
-          />
+          <View style={{ height: 60, width: "100%" }} />
           <TouchableOpacity
             style={{
               position: "absolute",
@@ -257,9 +260,9 @@ const Menu = (props) => {
       )}
       {existUser == false && (
         <View
-        style={{
-          marginLeft: "15%",
-        }}
+          style={{
+            marginLeft: "15%",
+          }}
         >
           <DrawerMenu
             iconName="key"
