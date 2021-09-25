@@ -109,7 +109,7 @@ const Menu = (props) => {
   async function verifyUser() {
     try {
       var user = await Auth.currentAuthenticatedUser();
-      console.log("existe un usuario conectado: ", user.attributes);
+      //console.log("existe un usuario conectado: ", user.attributes);
       if (user.attributes) {
         setExistUser(true);
       } else {

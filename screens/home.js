@@ -99,29 +99,40 @@ const Home = () => {
           <View style={{ flexDirection: "row" }}>
             <View
               style={{
-                width: "50%",
-                alignContent: "flex-start",
-                marginLeft: "-15%",
+                width: "35%",
+                marginBottom: 10,
+                marginRight: 10,
+                borderRadius: 5,
               }}
             >
               <Image
                 style={{
                   resizeMode: "stretch",
-                  height: "60%",
-                  width: "45%",
-                  marginTop: "1%",
-                  marginLeft: "10%",
+                  height: 220,
+                  width: "100%",
                 }}
                 source={{ uri: uri }}
               />
             </View>
-            <View style={{ width: "50%", marginLeft: "-20%" }}>
+            <View
+              style={{
+                width: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "white",
+                elevation: 3.5,
+                marginBottom: 10,
+                marginTop: 10,
+                borderRadius: 5,
+                /* borderWidth: 1,
+                borderColor: "black", */
+              }}
+            >
               <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-              <Text style={{ fontSize: 12 }}>Autor: {author}</Text>
-              <Text style={{ fontSize: 12 }}>Idioma: {language}</Text>
-              <Text style={{ fontSize: 12 }}>
-                {pd}/{pg} páginas.
-              </Text>
+              <Text style={{ fontSize: 15 }}>Autor: {author}</Text>
+              <Text style={{ fontSize: 15 }}>Idioma: {language}</Text>
+              <Text style={{ fontSize: 15 }}>Año: {pd}</Text>
+              <Text style={{ fontSize: 15 }}>{pg} páginas.</Text>
             </View>
           </View>
           <View

@@ -10,7 +10,7 @@ function Login({ navigation }){
   const [visiblePswrd, setVisiblePswrd] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [message, setMessage] = useState("Hola extraño");
+  const [message, setMessage] = useState("");
 
   async function connectUser() {
     setLoading(true);
@@ -28,7 +28,7 @@ function Login({ navigation }){
         setMessage("Has olvidado poner el correo o la contraseña");
       }
     } catch (error) {
-      //console.error("---------------",error);
+      console.error("---------------",error);
       if (error.code == "UserNotFoundException") {
         setMessage("Ups, no hemos encontrado tu usuario");
       } else if (error.code == "InvalidParameterException") {

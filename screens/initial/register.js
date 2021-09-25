@@ -3,7 +3,7 @@ import { Text, View, TextInput, Image, TouchableOpacity } from "react-native";
 import { Auth } from "aws-amplify";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-function Register(navigation) {
+function Register({navigation}) {
   //states
   const [email, setEmail] = useState("");
   const [passwrd, setPasswrd] = useState("");
@@ -75,6 +75,7 @@ function Register(navigation) {
       if (user.userSub != "") {
         //codigo de validacion
         setStep(1);
+        setMessage(nameUser + " hemos enviado un codigo a tu correo");
       } else {
         console.log("Error en el registro (funcion SignUp):" + user);
       }
@@ -112,9 +113,10 @@ function Register(navigation) {
         const response = await Auth.confirmSignUp(email, code);
         if (response != null) {
           //todo nice, se puede continuar
+          await Auth.signIn(email, passwrd);
           goHome();
         } else {
-          console.log("error al confirmar el codigo:" + response);
+          console.log("Error al confirmar el codigo:" + response);
         }
       } catch (error) {
         if (
@@ -128,7 +130,7 @@ function Register(navigation) {
             "El código no es válido, intenta revisar el spam en tu correo"
           );
         } else {
-          setMessage("Error al confirmar el correo: ", error);
+          setMessage("Hubo un error al confirmar el correo");
           console.log("Error al confirmar el correo (catch): ", error);
         }
       }
@@ -277,6 +279,7 @@ function Register(navigation) {
               onChangeText={(val) => setCode(val)}
               placeholder={"Codigo de validacion"}
               editable={loading ? false : true}
+              keyboardType={"numeric"}
             />
           </View>
           <TouchableOpacity
@@ -300,7 +303,7 @@ function Register(navigation) {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => resendConfirmationCode()}>
-            <Text style={{ color: "white", fontSize: 17 }}>
+            <Text style={{ color: "black", fontSize: 17 }}>
               No te ha llegado el código?
             </Text>
           </TouchableOpacity>
