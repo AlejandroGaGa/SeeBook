@@ -65,7 +65,7 @@ const Home = () => {
     setpd(pd);
     setpg(page);
   }
-  console.log("---->", title, language);
+  //console.log("---->", title, language);
   return (
     <>
       {/* inicioo de la modal */}

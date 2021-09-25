@@ -19,7 +19,6 @@ import Home from "./screens/home";
 import Interest from "./screens/interest";
 import Login from "./screens/initial/login";
 import Register from "./screens/initial/register";
-import Confirmation from "./screens/initial/confirmation";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import {
@@ -58,10 +57,6 @@ function LoginScreen({ navigation }) {
 
 function RegisterScreen({ navigation }) {
   return <Register navigation={navigation} />;
-}
-
-function ConfirmationScreen({ navigation }) {
-  return <Confirmation navigation={navigation} />;
 }
 
 //MENU
@@ -291,7 +286,6 @@ function App() {
         <Drawer.Screen name="Intereses" component={InterestScreen} />
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Registro" component={RegisterScreen} />
-        <Drawer.Screen name="Confirmacion" component={ConfirmationScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
