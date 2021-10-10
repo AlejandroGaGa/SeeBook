@@ -19,6 +19,7 @@ import Home from "./screens/home";
 import Interest from "./screens/interest";
 import Login from "./screens/initial/login";
 import Register from "./screens/initial/register";
+import Subcategoria from "./screens/subcategories";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import {
@@ -57,6 +58,10 @@ function LoginScreen({ navigation }) {
 
 function RegisterScreen({ navigation }) {
   return <Register navigation={navigation} />;
+}
+//FUNCTIONS THAT RETURNS SCREENS
+function Subcatego({ navigation }) {
+  return <Subcategoria navigation={navigation} />;
 }
 
 //MENU
@@ -203,7 +208,11 @@ const Menu = (props) => {
                       padding: 5,
                       marginBottom: 2.5,
                     }}
-                    onPress={() => console.log(item.category_id)}
+                    onPress={() =>
+                      props.navigation.navigate("Categoo", {
+                        data: item.category_id,
+                      })
+                    }
                   >
                     <Text style={s.tituloTxt}>{item.name}</Text>
                   </TouchableOpacity>
@@ -286,6 +295,7 @@ function App() {
         <Drawer.Screen name="Intereses" component={InterestScreen} />
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Registro" component={RegisterScreen} />
+        <Drawer.Screen name="Categoo" component={Subcatego} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
