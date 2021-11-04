@@ -18,6 +18,7 @@ import Openlibra from "../components/openlibra";
 import { EvilIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { createMyBooks } from "../src/graphql/mutations";
+import * as WebBrowser from 'expo-web-browser';
 const Home = () => {
   // modal
   const [modalVisible, setModalVisible] = useState(false);
@@ -72,7 +73,7 @@ const Home = () => {
 
   async function addFavorite() {
     try {
-      const user = await Auth.currentAuthenticatedUser();;
+      const user = await Auth.currentAuthenticatedUser();
       //console.log(user);
       if (user) {
         const input = {
@@ -86,8 +87,11 @@ const Home = () => {
           graphqlOperation(createMyBooks, { input: input })
         );
 
-        if(result.data.createMyBooks.id){
-          Alert.alert("Notificación","Se ha agregado este recurso a tus favoritos");
+        if (result.data.createMyBooks.id) {
+          Alert.alert(
+            "Notificación",
+            "Se ha agregado este recurso a tus favoritos"
+          );
         }
       }
     } catch (error) {
@@ -99,22 +103,16 @@ const Home = () => {
       }
     }
   }
+  const openLink = async (url) => {
+    let result = await WebBrowser.openBrowserAsync(url);
+    setResult(result);
+  };
 
-  function openLink(url) {
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        console.log("Don't know how to open URI: " + url);
-      }
-    });
-  }
 
   async function shareLink(link) {
     try {
       const result = await Share.share({
-        message:
-          'Encontré este libro que te puede interesar: '+link,
+        message: "Encontré este libro que te puede interesar: " + link,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

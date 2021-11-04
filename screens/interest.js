@@ -9,12 +9,13 @@ import {
   Pressable,
   Modal,
   Share,
+  ActivityIndicator,
 } from "react-native";
 import { EvilIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { listMyBooks } from "../src/graphql/queries";
 import Openlibra from "../components/openlibra";
-
+import * as WebBrowser from 'expo-web-browser';
 const Interest = () => {
   //get connected user
   useEffect(() => {
@@ -50,6 +51,10 @@ const Interest = () => {
     setIdBook(id);
     setLink(link);
   }
+  const openLink = async (url) => {
+    let result = await WebBrowser.openBrowserAsync(url);
+    setResult(result);
+  };
 
   async function verifyUser() {
     try {
@@ -103,8 +108,7 @@ const Interest = () => {
   async function shareLink(link) {
     try {
       const result = await Share.share({
-        message:
-          'Encontré este libro que te puede interesar: '+link,
+        message: "Encontré este libro que te puede interesar: " + link,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -294,7 +298,28 @@ const Interest = () => {
             keyExtractor={(item, index) => index}
           />
         ) : (
-          <Text>Aun no tienes favoritos ):</Text>
+          <>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "80%",
+              }}
+            >
+              <ActivityIndicator size="large" color="#a1887f" />
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "10%",
+              }}
+            >
+              <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                Cargando...
+              </Text>
+            </View>
+          </>
         )}
       </View>
     </>
