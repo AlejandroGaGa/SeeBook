@@ -3,9 +3,10 @@ import {
   Text,
   View,
   StyleSheet,
-  SafeAreaView,
+  Alert,
   ScrollView,
-  StatusBar,
+  Share,
+  Linking,
   TouchableOpacity,
   ActivityIndicator,
   Image,
@@ -15,19 +16,20 @@ import {
 } from "react-native";
 import Openlibra from "../components/openlibra";
 import { EvilIcons, AntDesign, Ionicons } from "@expo/vector-icons";
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { createMyBooks } from "../src/graphql/mutations";
 const Home = () => {
   // modal
   const [modalVisible, setModalVisible] = useState(false);
-  //titulo de libro libros
+  //datos del libro
   const [title, settitle] = useState("");
-  //titulo de libro libros
   const [language, setlanguage] = useState("");
-  //titulo de libro libros
   const [author, setAuthor] = useState("");
-  //titulo de libro libros
   const [uri, setUri] = useState("");
   const [pd, setpd] = useState("");
   const [pg, setpg] = useState("");
+  const [IdBook, setIdBook] = useState("");
+  const [link, setLink] = useState("");
   // ejecución de la petición
   useEffect(() => {
     Getbooks();
@@ -56,7 +58,7 @@ const Home = () => {
       });
   }
 
-  function informationbook(tl, lg, auth, img, pd, page) {
+  function informationbook(tl, lg, auth, img, pd, page, id, link) {
     settitle(tl);
     setlanguage(lg);
     setModalVisible(true);
@@ -64,7 +66,70 @@ const Home = () => {
     setUri(img);
     setpd(pd);
     setpg(page);
+    setIdBook(id);
+    setLink(link);
   }
+
+  async function addFavorite() {
+    try {
+      const user = await Auth.currentAuthenticatedUser();;
+      //console.log(user);
+      if (user) {
+        const input = {
+          idUser: user.attributes.sub,
+          idBook: IdBook,
+        };
+
+        console.log(input);
+
+        const result = await API.graphql(
+          graphqlOperation(createMyBooks, { input: input })
+        );
+
+        if(result.data.createMyBooks.id){
+          Alert.alert("Notificación","Se ha agregado este recurso a tus favoritos");
+        }
+      }
+    } catch (error) {
+      if (error == "The user is not authenticated") {
+        Alert.alert("Ops", "Debes iniciar sesión para poder agregar favoritos");
+        //props.navigation.navigate("Login");
+      } else {
+        console.log("Error al intentar crear registro de favoritos", error);
+      }
+    }
+  }
+
+  function openLink(url) {
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  }
+
+  async function shareLink(link) {
+    try {
+      const result = await Share.share({
+        message:
+          'Encontré este libro que te puede interesar: '+link,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   //console.log("---->", title, language);
   return (
     <>
@@ -155,12 +220,14 @@ const Home = () => {
                 borderRadius: 10,
                 marginRight: 4,
               }}
+              onPress={() => openLink(link)}
             >
               <View>
                 <AntDesign name="download" size={24} color="black" />
               </View>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => addFavorite()}
               style={{
                 backgroundColor: "white",
                 width: "30%",
@@ -187,6 +254,7 @@ const Home = () => {
                 borderRadius: 10,
                 marginRight: 4,
               }}
+              onPress={() => shareLink(link)}
             >
               <View>
                 <Ionicons name="share-social-sharp" size={24} color="black" />
@@ -195,8 +263,8 @@ const Home = () => {
           </View>
         </View>
       </Modal>
+      {/* fin de la modal */}
       <View>
-        {/* fin de la modal */}
         <Image
           style={{ height: 50, width: "100%" }}
           source={require("../assets/seebookban.png")}
@@ -228,7 +296,9 @@ const Home = () => {
                       item.author,
                       item.cover,
                       item.publisher_date,
-                      item.pages
+                      item.pages,
+                      item.ID,
+                      item.url_download
                     )
                   }
                 >
@@ -261,8 +331,9 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: "100%",
-    height: "40%",
-    marginTop: "120%",
+    position: "absolute",
+    bottom: 0,
+    paddingBottom: 10,
     alignItems: "center",
     backgroundColor: "white",
     elevation: 5,

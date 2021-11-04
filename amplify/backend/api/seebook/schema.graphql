@@ -1,0 +1,5 @@
+type myBooks @model {
+  id: ID!
+  idUser: String!
+  idBook: String!
+}
