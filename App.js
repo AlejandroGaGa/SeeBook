@@ -159,7 +159,7 @@ const Menu = (props) => {
         <DrawerMenu
           iconName="user"
           titleName="Mis favoritos"
-          navigation={() => props.navigation.navigate("Intereses")}
+          navigation={() => props.navigation.navigate("Favoritos")}
         />
       )}
       <ScrollView style={styles.scrollView}>
@@ -292,7 +292,7 @@ function App() {
     <NavigationContainer>
       <Drawer.Navigator drawerContent={(props) => <Menu {...props} />}>
         <Drawer.Screen name="SeeBook" component={HomeScreen} />
-        <Drawer.Screen name="Intereses" component={InterestScreen} />
+        <Drawer.Screen name="Favoritos" component={InterestScreen} />
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Registro" component={RegisterScreen} />
         <Drawer.Screen name="Categoo" component={Subcatego} />

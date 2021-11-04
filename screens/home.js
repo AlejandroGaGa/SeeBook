@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  StatusBar,
+  Share,
+  Linking,
   TouchableOpacity,
   ActivityIndicator,
   Image,
@@ -28,6 +29,7 @@ const Home = () => {
   const [pd, setpd] = useState("");
   const [pg, setpg] = useState("");
   const [IdBook, setIdBook] = useState("");
+  const [link, setLink] = useState("");
   // ejecución de la petición
   useEffect(() => {
     Getbooks();
@@ -56,7 +58,7 @@ const Home = () => {
       });
   }
 
-  function informationbook(tl, lg, auth, img, pd, page, id) {
+  function informationbook(tl, lg, auth, img, pd, page, id, link) {
     settitle(tl);
     setlanguage(lg);
     setModalVisible(true);
@@ -65,6 +67,7 @@ const Home = () => {
     setpd(pd);
     setpg(page);
     setIdBook(id);
+    setLink(link);
   }
 
   async function addFavorite() {
@@ -94,6 +97,36 @@ const Home = () => {
       } else {
         console.log("Error al intentar crear registro de favoritos", error);
       }
+    }
+  }
+
+  function openLink(url) {
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  }
+
+  async function shareLink(link) {
+    try {
+      const result = await Share.share({
+        message:
+          'Encontré este libro que te puede interesar: '+link,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
     }
   }
 
@@ -187,6 +220,7 @@ const Home = () => {
                 borderRadius: 10,
                 marginRight: 4,
               }}
+              onPress={() => openLink(link)}
             >
               <View>
                 <AntDesign name="download" size={24} color="black" />
@@ -220,6 +254,7 @@ const Home = () => {
                 borderRadius: 10,
                 marginRight: 4,
               }}
+              onPress={() => shareLink(link)}
             >
               <View>
                 <Ionicons name="share-social-sharp" size={24} color="black" />
@@ -228,8 +263,8 @@ const Home = () => {
           </View>
         </View>
       </Modal>
+      {/* fin de la modal */}
       <View>
-        {/* fin de la modal */}
         <Image
           style={{ height: 50, width: "100%" }}
           source={require("../assets/seebookban.png")}
@@ -262,7 +297,8 @@ const Home = () => {
                       item.cover,
                       item.publisher_date,
                       item.pages,
-                      item.ID
+                      item.ID,
+                      item.url_download
                     )
                   }
                 >
