@@ -158,7 +158,7 @@ const Menu = (props) => {
       {existUser && (
         <DrawerMenu
           iconName="user"
-          titleName="Intereses Personales"
+          titleName="Mis favoritos"
           navigation={() => props.navigation.navigate("Intereses")}
         />
       )}

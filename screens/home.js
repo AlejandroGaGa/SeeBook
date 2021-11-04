@@ -3,7 +3,7 @@ import {
   Text,
   View,
   StyleSheet,
-  SafeAreaView,
+  Alert,
   ScrollView,
   StatusBar,
   TouchableOpacity,
@@ -15,6 +15,8 @@ import {
 } from "react-native";
 import Openlibra from "../components/openlibra";
 import { EvilIcons, AntDesign, Ionicons } from "@expo/vector-icons";
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { createMyBooks } from "../src/graphql/mutations";
 const Home = () => {
   // modal
   const [modalVisible, setModalVisible] = useState(false);
@@ -65,9 +67,36 @@ const Home = () => {
     setIdBook(id);
   }
 
-  function addFavorite() {
-    console.log("Agregando a favoritos");
+  async function addFavorite() {
+    try {
+      const user = await Auth.currentAuthenticatedUser();;
+      //console.log(user);
+      if (user) {
+        const input = {
+          idUser: user.attributes.sub,
+          idBook: IdBook,
+        };
+
+        console.log(input);
+
+        const result = await API.graphql(
+          graphqlOperation(createMyBooks, { input: input })
+        );
+
+        if(result.data.createMyBooks.id){
+          Alert.alert("Notificación","Se ha agregado este recurso a tus favoritos");
+        }
+      }
+    } catch (error) {
+      if (error == "The user is not authenticated") {
+        Alert.alert("Ops", "Debes iniciar sesión para poder agregar favoritos");
+        //props.navigation.navigate("Login");
+      } else {
+        console.log("Error al intentar crear registro de favoritos", error);
+      }
+    }
   }
+
   //console.log("---->", title, language);
   return (
     <>
@@ -266,8 +295,9 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: "100%",
-    height: "40%",
-    marginTop: "120%",
+    position: "absolute",
+    bottom: 0,
+    paddingBottom: 10,
     alignItems: "center",
     backgroundColor: "white",
     elevation: 5,

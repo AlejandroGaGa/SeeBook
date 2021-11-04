@@ -60,6 +60,27 @@ class Openlibra extends Component {
         reject(error);
       }
     });
+
+  getBook = (id) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        const GetBook = await fetch(
+          "https://www.etnassoft.com/api/v1/get/?id=" + id + "&callback=?",
+          {
+            method: "GET",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const getBook = await GetBook.json();
+        resolve(getBook);
+      } catch (error) {
+        reject(error);
+      }
+    });
+
   showid = (id) =>
     new Promise(async (resolve, reject) => {
       try {
