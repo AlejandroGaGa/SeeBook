@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "seebook",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authseebook5f863bf5",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

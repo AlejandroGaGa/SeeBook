@@ -18,16 +18,14 @@ import { EvilIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 const Home = () => {
   // modal
   const [modalVisible, setModalVisible] = useState(false);
-  //titulo de libro libros
+  //datos del libro
   const [title, settitle] = useState("");
-  //titulo de libro libros
   const [language, setlanguage] = useState("");
-  //titulo de libro libros
   const [author, setAuthor] = useState("");
-  //titulo de libro libros
   const [uri, setUri] = useState("");
   const [pd, setpd] = useState("");
   const [pg, setpg] = useState("");
+  const [IdBook, setIdBook] = useState("");
   // ejecución de la petición
   useEffect(() => {
     Getbooks();
@@ -56,7 +54,7 @@ const Home = () => {
       });
   }
 
-  function informationbook(tl, lg, auth, img, pd, page) {
+  function informationbook(tl, lg, auth, img, pd, page, id) {
     settitle(tl);
     setlanguage(lg);
     setModalVisible(true);
@@ -64,6 +62,11 @@ const Home = () => {
     setUri(img);
     setpd(pd);
     setpg(page);
+    setIdBook(id);
+  }
+
+  function addFavorite() {
+    console.log("Agregando a favoritos");
   }
   //console.log("---->", title, language);
   return (
@@ -161,6 +164,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => addFavorite()}
               style={{
                 backgroundColor: "white",
                 width: "30%",
@@ -228,7 +232,8 @@ const Home = () => {
                       item.author,
                       item.cover,
                       item.publisher_date,
-                      item.pages
+                      item.pages,
+                      item.ID
                     )
                   }
                 >
