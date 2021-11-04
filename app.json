@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "proyecto",
-    "slug": "proyecto",
-    "version": "1.0.0",
+    "name": "Seebook",
+    "slug": "Seebook",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icono.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -14,14 +14,16 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/*"
     ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.SeebookCorporation.Seebook",
+      "versionCode":2,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icono.png",
         "backgroundColor": "#FFFFFF"
       }
     },
