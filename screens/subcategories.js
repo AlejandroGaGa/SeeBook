@@ -1,75 +1,99 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TextInput, StyleSheet, Button } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { Auth } from "aws-amplify";
 import Openlibra from "../components/openlibra";
+//FUNCTIONS THAT RETURNS SCREENS
 
 const Subcategoria = (props) => {
-  const [number, onChangeNumber] = React.useState(null);
-
+  const [array, setarrecategories] = useState([]);
+  var id = props.props.route.params.id;
+  let openlibra = new Openlibra();
   useEffect(() => {
-    pet();
-  }, []);
-  const [arrayglo, setarray] = useState([]);
-  const [array2, setar] = useState([]);
+    subcategoria(id);
+  }, [array]);
 
-  function pet() {
-    var array = [];
-    let Open = new Openlibra();
-    Open.listbd()
-      .then((result) => {
-        for (var i in result) {
-          array.push(result[i]);
+  function subcategoria(n) {
+    var arre = [];
+    openlibra
+      .showid(n)
+      .then((res) => {
+        for (var i in res) {
+          arre.push(res[i]);
         }
-        setarray(array);
+        setarrecategories(arre);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  function petbyid(int) {
-    let Open = new Openlibra();
-    Open.showid(int)
-      .then((result) => {
-        setar(result);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  console.log("-------3----------->", array2);
-  /*   console.log("Este es el array", arrayglo); */
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      {arrayglo.map((item, i) => (
-        <Text>
-          {item.Id_Producto}.-{item.Nombre_Producto}
-        </Text>
-      ))}
-      <Text style={{ fontSize: 15, marginTop: 10 }}>
-        Ingrese un id para mostrar los datos de ese usuario
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeNumber}
-        value={number}
-      />
-      <Button
-        onPress={() => petbyid(number)}
-        title="Mostrar datos"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
-      {array2.map((item, i) => (
+      {array.length > 0 ? (
         <>
-          <Text>
-            {item.Id_Producto}.-{item.Nombre_Producto}
-          </Text>
-          <Text>
-           Su rfc es: {item.rfc} y su nikname es: {item.nikname}
-          </Text>
+          <View
+            style={{
+              backgroundColor: "white",
+              width: "100%",
+              height: "5%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+              Libros de {props.props.route.params.name}
+            </Text>
+          </View>
+          <FlatList
+            style={{ height: "100%" }}
+            data={array}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  height: "98%",
+                  width: "45%",
+                  backgroundColor: "white",
+                  marginHorizontal: 10,
+                  marginVertical: 5,
+                  elevation: 5,
+                  borderRadius: 5,
+                  padding: 2,
+                }}
+              >
+                <TouchableOpacity
+                /*    onPress={() =>
+                informationbook(
+                  item.title,
+                  item.language,
+                  item.author,
+                  item.cover,
+                  item.publisher_date,
+                  item.pages
+                )
+              } */
+                >
+                  <Image
+                    style={{ height: 250, width: "100%" }}
+                    source={{ uri: item.thumbnail }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            numColumns={2}
+            keyExtractor={(item, index) => index}
+          />
         </>
-      ))}
+      ) : (
+        <ActivityIndicator size="large" color="#a1887f" />
+      )}
     </View>
   );
 };

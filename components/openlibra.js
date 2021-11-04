@@ -41,30 +41,12 @@ class Openlibra extends Component {
         reject(error);
       }
     });
-  //obtener libros topic
-  listbd = () =>
-    new Promise(async (resolve, reject) => {
-      try {
-        const GetBooks = await fetch(
-          "http://192.168.15.170:7010/api/Producto/ListProducts",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const getbookstop = await GetBooks.json();
-        resolve(getbookstop);
-      } catch (error) {
-        reject(error);
-      }
-    });
+
   showid = (id) =>
     new Promise(async (resolve, reject) => {
       try {
         const GetBooks = await fetch(
-          "http://192.168.15.170:7010/api/Producto/Search/" + id + "",
+          "https://www.etnassoft.com/api/v1/get/?subcategory_id=" + id + "",
           {
             method: "GET",
             headers: {

@@ -60,8 +60,8 @@ function RegisterScreen({ navigation }) {
   return <Register navigation={navigation} />;
 }
 //FUNCTIONS THAT RETURNS SCREENS
-function Subcatego({ navigation }) {
-  return <Subcategoria navigation={navigation} />;
+function Subcatego(props) {
+  return <Subcategoria props={props} />;
 }
 
 //MENU
@@ -209,8 +209,9 @@ const Menu = (props) => {
                       marginBottom: 2.5,
                     }}
                     onPress={() =>
-                      props.navigation.navigate("Categoo", {
-                        data: item.category_id,
+                      props.navigation.navigate("Categorías", {
+                        id: item.category_id,
+                        name : item.name,
                       })
                     }
                   >
@@ -295,7 +296,7 @@ function App() {
         <Drawer.Screen name="Intereses" component={InterestScreen} />
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Registro" component={RegisterScreen} />
-        <Drawer.Screen name="Categoo" component={Subcatego} />
+        <Drawer.Screen name="Categorías" component={Subcatego} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
